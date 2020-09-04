@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import s from '../../styled';
 
 const ContactList = ({ contacts, onRemoveContact }) => {
-  console.log(contacts);
   return contacts.map(({ id, name, number }) => (
     <s.liItem key={id}>
       {name}: {number}

@@ -15,6 +15,12 @@ const Input = styled.input`
 const Filter = ({ ...props }) => {
   const { filter, handleChange } = props;
 
+  const onChangeHandler = e => {
+    const filterVaule = e.target.value;
+
+    handleChange(filterVaule);
+  };
+
   return (
     <div>
       <p>Find contacts by name</p>
@@ -22,7 +28,7 @@ const Filter = ({ ...props }) => {
         type="text"
         placeholder="Filter"
         value={filter}
-        onChange={e => handleChange(e.target.value)}
+        onChange={onChangeHandler}
       />
     </div>
   );

@@ -7,12 +7,22 @@ import ContactList from './ContactList/ContactList';
 import { v4 as uuidv4 } from 'uuid';
 import styled from 'styled-components';
 
+const Div = styled.div`
+  margin: 0 auto;
+  padding: 10px 10px;
+  max-width: 500px;
+`;
+
 const TitleH1 = styled.h1`
   margin-bottom: 20px;
   font-size: 20px;
   font-weight: bold;
 `;
 const TitleH2 = styled(TitleH1)``;
+
+const Ul = styled.ul`
+  padding-left: 20px;
+`;
 
 export default class App extends Component {
   state = {
@@ -72,14 +82,14 @@ export default class App extends Component {
     const filterContacts = getFilterContacts();
 
     return (
-      <div>
+      <Div>
         <TitleH1>Phonebook</TitleH1>
         <ContactForm onAddContact={addContact} />
 
         <TitleH2>Contacts</TitleH2>
         {isShowFilter && <Filter filter={filter} handleChange={handleFilter} />}
 
-        <ul>
+        <Ul>
           {isShowContacts ? (
             <ContactList
               contacts={filterContacts}
@@ -88,8 +98,8 @@ export default class App extends Component {
           ) : (
             <li>No contacts</li>
           )}
-        </ul>
-      </div>
+        </Ul>
+      </Div>
     );
   }
 }

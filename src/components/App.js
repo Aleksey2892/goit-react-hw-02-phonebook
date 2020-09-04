@@ -34,14 +34,12 @@ export default class App extends Component {
     );
 
     !isCheckDuplicate
-      ? this.setState(prevState => {
-          return {
-            contacts: [
-              ...prevState.contacts,
-              { name: name, number: number, id: id },
-            ],
-          };
-        })
+      ? this.setState(prevState => ({
+          contacts: [
+            ...prevState.contacts,
+            { name: name, number: number, id: id },
+          ],
+        }))
       : alert(`${name.toUpperCase()} is already in contacts`);
   };
 

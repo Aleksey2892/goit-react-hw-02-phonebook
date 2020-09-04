@@ -5,8 +5,14 @@ import Filter from './Filter/Filter';
 import ContactList from './ContactList/ContactList';
 
 import { v4 as uuidv4 } from 'uuid';
+import styled from 'styled-components';
 
-import s from './styled';
+const TitleH1 = styled.h1`
+  margin-bottom: 20px;
+  font-size: 20px;
+  font-weight: bold;
+`;
+const TitleH2 = styled(TitleH1)``;
 
 export default class App extends Component {
   state = {
@@ -19,28 +25,36 @@ export default class App extends Component {
     filter: '',
   };
 
-  addContact = contact => {
-    const { name, number } = contact;
+  addContact = ({ name, number }) => {
+    const { contacts } = this.state;
     const id = uuidv4();
 
-    const stopAdd = this.state.contacts.find(item => item.name === name);
+    const isCheckDuplicate = contacts.find(
+      item => item.name.toLowerCase() === name.toLowerCase(),
+    );
 
-    if (!stopAdd) {
-      this.setState(prevState => {
-        return {
-          contacts: [
-            ...prevState.contacts,
-            { name: name, number: number, id: id },
-          ],
-        };
-      });
-    } else {
-      alert(`${name} is already in contacts`);
-    }
+    !isCheckDuplicate
+      ? this.setState(prevState => {
+          return {
+            contacts: [
+              ...prevState.contacts,
+              { name: name, number: number, id: id },
+            ],
+          };
+        })
+      : alert(`${name.toUpperCase()} is already in contacts`);
   };
 
-  handleFilter = e => {
-    this.setState({ filter: e.target.value });
+  removeContact = contactId => {
+    this.setState(prevState => {
+      return {
+        contacts: prevState.contacts.filter(({ id }) => id !== contactId),
+      };
+    });
+  };
+
+  handleFilter = value => {
+    this.setState({ filter: value });
   };
 
   getFilterContacts = () => {
@@ -53,24 +67,26 @@ export default class App extends Component {
 
   render() {
     const { contacts, filter } = this.state;
-    const { handleFilter, getFilterContacts, addContact } = this;
+    const { handleFilter, getFilterContacts, addContact, removeContact } = this;
 
-    const isShowContacts = contacts.length > 1;
+    const isShowFilter = contacts.length > 1;
+    const isShowContacts = contacts.length > 0;
     const filterContacts = getFilterContacts();
 
     return (
       <div>
-        <s.TitleH1>Phonebook</s.TitleH1>
+        <TitleH1>Phonebook</TitleH1>
         <ContactForm onAddContact={addContact} />
 
-        <s.TitleH2>Contacts</s.TitleH2>
-        {isShowContacts && (
-          <Filter filter={filter} handleChange={handleFilter} />
-        )}
+        <TitleH2>Contacts</TitleH2>
+        {isShowFilter && <Filter filter={filter} handleChange={handleFilter} />}
 
         <ul>
           {isShowContacts ? (
-            <ContactList contacts={filterContacts} />
+            <ContactList
+              contacts={filterContacts}
+              onRemoveContact={removeContact}
+            />
           ) : (
             <li>No contacts</li>
           )}

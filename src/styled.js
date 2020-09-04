@@ -1,13 +1,4 @@
-// import React from 'react';
 import styled from 'styled-components';
-
-const TitleH1 = styled.h1`
-  margin-bottom: 20px;
-  font-size: 20px;
-  font-weight: bold;
-`;
-
-const TitleH2 = styled(TitleH1)``;
 
 const Form = styled.form`
   margin-bottom: 20px;
@@ -31,10 +22,37 @@ const Button = styled.button`
   font-weight: bold;
   font-size: 14px;
   transition: all, 0.2s;
+  outline: none;
 
   &:hover {
-    background-color: red;
+    background-color: palevioletred;
     color: white;
+  }
+`;
+
+const BtnRemove = styled.button`
+  min-width: 60px;
+  margin-left: 10px;
+  background: transparent;
+  cursor: pointer;
+  border: 2px solid palevioletred;
+  border-radius: 3px;
+  font-size: 14px;
+  color: palevioletred;
+  outline: none;
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: palevioletred;
+    color: white;
+  }
+`;
+
+const liItem = styled.li`
+  margin-bottom: 5px;
+
+  &:last-child {
+    margin-bottom: 0;
   }
 `;
 
@@ -52,5 +70,5 @@ const Label = styled.label`
   flex-direction: column;
 `;
 
-const s = { TitleH1, TitleH2, Form, Button, Input, Label };
+const s = { Form, Button, BtnRemove, liItem, Input, Label };
 export default s;

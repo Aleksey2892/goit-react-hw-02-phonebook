@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
-import s from '../styled';
+import s from '../../styled';
 
 const RESET_STATE_NAME = {
   name: '',
@@ -8,6 +9,10 @@ const RESET_STATE_NAME = {
 };
 
 export default class ContactForm extends Component {
+  static propTypes = {
+    onAddContact: PropTypes.func.isRequired,
+  };
+
   state = { ...RESET_STATE_NAME, name: '', number: '' };
 
   resetName = () => {
@@ -49,7 +54,7 @@ export default class ContactForm extends Component {
           <s.Label>
             Number
             <s.Input
-              type="text"
+              type="number"
               placeholder="Сontact number"
               value={number}
               onChange={e => handleChange(e, 'number')}

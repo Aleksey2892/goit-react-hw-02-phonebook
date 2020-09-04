@@ -1,32 +1,31 @@
 import React, { Component } from 'react';
 
+import ContactForm from './ContactForm/ContactForm';
+import Filter from './Filter/Filter';
 import ContactList from './ContactList/ContactList';
 
 import { v4 as uuidv4 } from 'uuid';
 
 import s from './styled';
 
-const RESET_STATE_NAME = {
-  name: '',
-  number: '',
-};
-
 export default class App extends Component {
   state = {
-    ...RESET_STATE_NAME,
-    contacts: [],
+    contacts: [
+      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
+      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
+      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
+      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
+    ],
     filter: '',
-    name: '',
-    number: '',
   };
 
-  handleSubmit = e => {
-    e.preventDefault();
-    const { name, number } = this.state;
-
+  addContact = contact => {
+    const { name, number } = contact;
     const id = uuidv4();
 
-    if (name && number) {
+    const stopAdd = this.state.contacts.find(item => item.name === name);
+
+    if (!stopAdd) {
       this.setState(prevState => {
         return {
           contacts: [
@@ -35,16 +34,13 @@ export default class App extends Component {
           ],
         };
       });
-      this.resetName();
+    } else {
+      alert(`${name} is already in contacts`);
     }
   };
 
-  handleChange = (e, type) => {
-    this.setState({ [type]: e.target.value });
-  };
-
-  resetName = () => {
-    this.setState({ ...RESET_STATE_NAME });
+  handleFilter = e => {
+    this.setState({ filter: e.target.value });
   };
 
   getFilterContacts = () => {
@@ -56,54 +52,30 @@ export default class App extends Component {
   };
 
   render() {
-    const { name, number, contacts, filter } = this.state;
-    const { handleSubmit, handleChange, getFilterContacts } = this;
+    const { contacts, filter } = this.state;
+    const { handleFilter, getFilterContacts, addContact } = this;
+
+    const isShowContacts = contacts.length > 1;
     const filterContacts = getFilterContacts();
 
     return (
-      <>
+      <div>
         <s.TitleH1>Phonebook</s.TitleH1>
-        <s.Form onSubmit={handleSubmit}>
-          <s.Label>
-            Name
-            <s.Input
-              type="text"
-              placeholder="Сontact name"
-              value={name}
-              onChange={e => handleChange(e, 'name')}
-            />
-          </s.Label>
-          <s.Label>
-            Number
-            <s.Input
-              type="text"
-              placeholder="Сontact number"
-              value={number}
-              onChange={e => handleChange(e, 'number')}
-            />
-          </s.Label>
-
-          <s.Button type="submit">Add contact</s.Button>
-        </s.Form>
+        <ContactForm onAddContact={addContact} />
 
         <s.TitleH2>Contacts</s.TitleH2>
-        <div>
-          <p>Find contacts by name</p>
-          <s.Input
-            type="text"
-            placeholder="Filter"
-            value={filter}
-            onChange={e => handleChange(e, 'filter')}
-          />
-        </div>
+        {isShowContacts && (
+          <Filter filter={filter} handleChange={handleFilter} />
+        )}
+
         <ul>
-          {contacts.length > 0 ? (
+          {isShowContacts ? (
             <ContactList contacts={filterContacts} />
           ) : (
             <li>No contacts</li>
           )}
         </ul>
-      </>
+      </div>
     );
   }
 }

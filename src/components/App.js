@@ -20,10 +20,6 @@ const TitleH1 = styled.h1`
 `;
 const TitleH2 = styled(TitleH1)``;
 
-const Ul = styled.ul`
-  padding-left: 20px;
-`;
-
 export default class App extends Component {
   state = {
     contacts: [
@@ -35,25 +31,23 @@ export default class App extends Component {
     filter: '',
   };
 
-  addContact = ({ name, number }) => {
+  handleAddContact = ({ name, number }) => {
     const { contacts } = this.state;
-    const id = uuidv4();
 
     const isCheckDuplicate = contacts.find(
-      item => item.name.toLowerCase() === name.toLowerCase(),
+      el => el.name.toLowerCase() === name.toLowerCase(),
     );
 
-    !isCheckDuplicate
-      ? this.setState(prevState => ({
-          contacts: [
-            ...prevState.contacts,
-            { name: name, number: number, id: id },
-          ],
-        }))
-      : alert(`${name.toUpperCase()} is already in contacts`);
+    const notAdd = () => alert(`${name.toUpperCase()} is already in contacts`);
+    const add = () =>
+      this.setState(prevState => ({
+        contacts: [...prevState.contacts, { name, number, id: uuidv4() }],
+      }));
+
+    !isCheckDuplicate ? add() : notAdd();
   };
 
-  removeContact = contactId => {
+  handleRemoveContact = contactId => {
     this.setState(prevState => {
       return {
         contacts: prevState.contacts.filter(({ id }) => id !== contactId),
@@ -61,8 +55,10 @@ export default class App extends Component {
     });
   };
 
-  handleFilter = value => {
-    this.setState({ filter: value });
+  handleFilter = ({ target }) => {
+    const { value, name } = target;
+
+    this.setState({ [name]: value });
   };
 
   getFilterContacts = () => {
@@ -75,30 +71,26 @@ export default class App extends Component {
 
   render() {
     const { contacts, filter } = this.state;
-    const { handleFilter, getFilterContacts, addContact, removeContact } = this;
 
     const isShowFilter = contacts.length > 1;
     const isShowContacts = contacts.length > 0;
-    const filterContacts = getFilterContacts();
+    const filterContacts = this.getFilterContacts();
 
     return (
       <Div>
         <TitleH1>Phonebook</TitleH1>
-        <ContactForm onAddContact={addContact} />
+        <ContactForm onAddContact={this.handleAddContact} />
 
         <TitleH2>Contacts</TitleH2>
-        {isShowFilter && <Filter filter={filter} handleChange={handleFilter} />}
+        {isShowFilter && (
+          <Filter filter={filter} onChange={this.handleFilter} />
+        )}
 
-        <Ul>
-          {isShowContacts ? (
-            <ContactList
-              contacts={filterContacts}
-              onRemoveContact={removeContact}
-            />
-          ) : (
-            <li>No contacts</li>
-          )}
-        </Ul>
+        <ContactList
+          isShowContacts={isShowContacts}
+          contacts={filterContacts}
+          onRemoveContact={this.handleRemoveContact}
+        />
       </Div>
     );
   }

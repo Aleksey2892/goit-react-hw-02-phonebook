@@ -48,6 +48,10 @@ const BtnRemove = styled.button`
   }
 `;
 
+const Ul = styled.ul`
+  padding-left: 20px;
+`;
+
 const liItem = styled.li`
   margin-bottom: 5px;
 
@@ -70,5 +74,5 @@ const Label = styled.label`
   flex-direction: column;
 `;
 
-const s = { Form, Button, BtnRemove, liItem, Input, Label };
+const s = { Form, Button, BtnRemove, Ul, liItem, Input, Label };
 export default s;

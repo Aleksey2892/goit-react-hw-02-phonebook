@@ -12,23 +12,16 @@ const Input = styled.input`
   }
 `;
 
-const Filter = ({ ...props }) => {
-  const { filter, handleChange } = props;
-
-  const onChangeHandler = e => {
-    const filterVaule = e.target.value;
-
-    handleChange(filterVaule);
-  };
-
+const Filter = ({ filter, onChange }) => {
   return (
     <div>
       <p>Find contacts by name</p>
       <Input
         type="text"
         placeholder="Filter"
+        name="filter"
         value={filter}
-        onChange={onChangeHandler}
+        onChange={onChange}
       />
     </div>
   );

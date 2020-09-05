@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import s from '../../styled';
 
-const RESET_STATE_NAME = {
+const INITIAL_STATE = {
   name: '',
   number: '',
 };
@@ -13,14 +13,16 @@ export default class ContactForm extends Component {
     onAddContact: PropTypes.func.isRequired,
   };
 
-  state = { ...RESET_STATE_NAME, name: '', number: '' };
+  state = INITIAL_STATE;
 
-  resetName = () => {
-    this.setState({ ...RESET_STATE_NAME });
+  resetState = () => {
+    this.setState(INITIAL_STATE);
   };
 
-  handleChange = (e, type) => {
-    this.setState({ [type]: e.target.value });
+  handleChange = ({ target }) => {
+    const { name, value } = target;
+
+    this.setState({ [name]: value });
   };
 
   handleSubmit = e => {
@@ -28,27 +30,27 @@ export default class ContactForm extends Component {
     const { name, number } = this.state;
 
     if (name && number) {
-      const contact = { name: name, number: number };
+      const NewContact = { name, number };
 
-      this.props.onAddContact(contact);
-      this.resetName();
+      this.props.onAddContact(NewContact);
+      this.resetState();
     }
   };
 
   render() {
     const { name, number } = this.state;
-    const { handleSubmit, handleChange } = this;
 
     return (
       <>
-        <s.Form onSubmit={handleSubmit}>
+        <s.Form onSubmit={this.handleSubmit}>
           <s.Label>
             Name
             <s.Input
               type="text"
               placeholder="Сontact name"
+              name="name"
               value={name}
-              onChange={e => handleChange(e, 'name')}
+              onChange={this.handleChange}
             />
           </s.Label>
           <s.Label>
@@ -56,8 +58,9 @@ export default class ContactForm extends Component {
             <s.Input
               type="number"
               placeholder="Сontact number"
+              name="number"
               value={number}
-              onChange={e => handleChange(e, 'number')}
+              onChange={this.handleChange}
             />
           </s.Label>
 

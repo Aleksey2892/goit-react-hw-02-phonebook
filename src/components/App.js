@@ -32,10 +32,10 @@ export default class App extends Component {
   };
 
   componentDidMount() {
-    const isContactsData = localStorage.getItem('contacts');
+    const contactsData = localStorage.getItem('contacts');
 
-    if (isContactsData) {
-      this.setState({ contacts: JSON.parse(isContactsData) });
+    if (contactsData) {
+      this.setState({ contacts: JSON.parse(contactsData) });
     }
   }
 

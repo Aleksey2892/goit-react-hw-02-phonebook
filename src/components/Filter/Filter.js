@@ -1,22 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import styled from 'styled-components';
-
-const Input = styled.input`
-  margin-bottom: 20px;
-  text-align: center;
-
-  &::placeholder {
-    font-size: 14px;
-  }
-`;
+import s from './Filter.module.scss';
 
 const Filter = ({ filter, onChange }) => {
   return (
-    <div>
+    <div className={s.filterBox}>
       <p>Find contacts by name</p>
-      <Input
+      <input
+        className={s.inputFilter}
         type="text"
         placeholder="Filter"
         name="filter"

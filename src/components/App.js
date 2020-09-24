@@ -1,24 +1,15 @@
 import React, { Component } from 'react';
 
+import { v4 as uuidv4 } from 'uuid';
+import { CSSTransition } from 'react-transition-group';
+
 import ContactForm from './ContactForm/ContactForm';
 import Filter from './Filter/Filter';
 import ContactList from './ContactList/ContactList';
+import Notification from './Notification/Notification';
 
-import { v4 as uuidv4 } from 'uuid';
-import styled from 'styled-components';
-
-const Div = styled.div`
-  margin: 0 auto;
-  padding: 10px 10px;
-  max-width: 500px;
-`;
-
-const TitleH1 = styled.h1`
-  margin-bottom: 20px;
-  font-size: 20px;
-  font-weight: bold;
-`;
-const TitleH2 = styled(TitleH1)``;
+import s from './App.module.scss';
+import animation from './animation.module.scss';
 
 export default class App extends Component {
   state = {
@@ -29,6 +20,7 @@ export default class App extends Component {
       { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
     ],
     filter: '',
+    isAlreadyContact: { name: '', isShowMessage: false },
   };
 
   componentDidMount() {
@@ -52,10 +44,15 @@ export default class App extends Component {
       el => el.name.toLowerCase() === name.toLowerCase(),
     );
 
-    const notAdd = () => alert(`${name.toUpperCase()} is already in contacts`);
+    const notAdd = () => {
+      this.setState({
+        isAlreadyContact: { name: name.toUpperCase(), isShowMessage: true },
+      });
+      setTimeout(() => this.setState({ isAlreadyContact: { name: '' } }), 6000);
+    };
     const add = () =>
       this.setState(prevState => ({
-        contacts: [...prevState.contacts, { name, number, id: uuidv4() }],
+        contacts: [{ name, number, id: uuidv4() }, ...prevState.contacts],
       }));
 
     !isCheckDuplicate ? add() : notAdd();
@@ -83,29 +80,51 @@ export default class App extends Component {
     );
   };
 
+  handleNotification = () => {
+    this.setState({ isAlreadyContact: { isShowMessage: false } });
+  };
+
   render() {
-    const { contacts, filter } = this.state;
+    const { contacts, filter, isAlreadyContact } = this.state;
 
     const isShowFilter = contacts.length > 1;
     const isShowContacts = contacts.length > 0;
     const filterContacts = this.getFilterContacts();
+    const { isShowMessage, name } = isAlreadyContact;
 
     return (
-      <Div>
-        <TitleH1>Phonebook</TitleH1>
+      <div className={s.interfaceBox}>
+        <CSSTransition in={true} appear timeout={500} classNames={animation}>
+          <h1 className={s.titleApp}>Phonebook</h1>
+        </CSSTransition>
+
+        <CSSTransition
+          in={isShowMessage}
+          timeout={250}
+          classNames={animation}
+          unmountOnExit
+        >
+          <Notification contact={name} onClick={this.handleNotification} />
+        </CSSTransition>
+
         <ContactForm onAddContact={this.handleAddContact} />
 
-        <TitleH2>Contacts</TitleH2>
-        {isShowFilter && (
+        <h2 className={s.titleContacts}>Contacts</h2>
+        <CSSTransition
+          in={isShowFilter}
+          timeout={250}
+          classNames={animation}
+          unmountOnExit
+        >
           <Filter filter={filter} onChange={this.handleFilter} />
-        )}
+        </CSSTransition>
 
         <ContactList
           isShowContacts={isShowContacts}
           contacts={filterContacts}
           onRemoveContact={this.handleRemoveContact}
         />
-      </Div>
+      </div>
     );
   }
 }

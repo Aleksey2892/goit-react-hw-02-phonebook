@@ -11,9 +11,9 @@
 .exit {
   transform: scale(1);
   opacity: 1;
-  transition: all 250ms linear;
 }
 .exitActive {
   transform: scale(0.1);
   opacity: 0;
+  transition: all 250ms linear;
 }

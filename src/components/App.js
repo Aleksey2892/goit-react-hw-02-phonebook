@@ -48,7 +48,10 @@ export default class App extends Component {
       this.setState({
         isAlreadyContact: { name: name.toUpperCase(), isShowMessage: true },
       });
-      setTimeout(() => this.setState({ isAlreadyContact: { name: '' } }), 6000);
+      setTimeout(
+        () => this.setState({ isAlreadyContact: { isShowMessage: false } }),
+        6000,
+      );
     };
     const add = () =>
       this.setState(prevState => ({

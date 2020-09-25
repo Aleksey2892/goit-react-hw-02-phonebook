@@ -9,7 +9,13 @@ import ContactList from './ContactList/ContactList';
 import Notification from './Notification/Notification';
 
 import s from './App.module.scss';
-import animation from './animation.module.scss';
+import './animation.scss';
+
+const RESET_MESSAGE = {
+  name: '',
+  timerId: null,
+  isShowMessage: false,
+};
 
 export default class App extends Component {
   state = {
@@ -20,7 +26,7 @@ export default class App extends Component {
       { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
     ],
     filter: '',
-    isAlreadyContact: { name: '', isShowMessage: false },
+    message: { name: '', timerId: null, isShowMessage: false },
   };
 
   componentDidMount() {
@@ -45,13 +51,21 @@ export default class App extends Component {
     );
 
     const notAdd = () => {
-      this.setState({
-        isAlreadyContact: { name: name.toUpperCase(), isShowMessage: true },
-      });
-      setTimeout(
-        () => this.setState({ isAlreadyContact: { isShowMessage: false } }),
-        6000,
+      const timerId = setTimeout(
+        () =>
+          this.setState({
+            message: { ...RESET_MESSAGE },
+          }),
+        5000,
       );
+
+      this.setState({
+        message: {
+          name: name.toUpperCase(),
+          timerId,
+          isShowMessage: true,
+        },
+      });
     };
     const add = () =>
       this.setState(prevState => ({
@@ -84,27 +98,35 @@ export default class App extends Component {
   };
 
   handleNotification = () => {
-    this.setState({ isAlreadyContact: { isShowMessage: false } });
+    const {
+      message: { timerId },
+    } = this.state;
+
+    clearTimeout(timerId);
+
+    this.setState({
+      message: { ...RESET_MESSAGE },
+    });
   };
 
   render() {
-    const { contacts, filter, isAlreadyContact } = this.state;
+    const { contacts, filter, message } = this.state;
 
     const isShowFilter = contacts.length > 1;
     const isShowContacts = contacts.length > 0;
     const filterContacts = this.getFilterContacts();
-    const { isShowMessage, name } = isAlreadyContact;
+    const { isShowMessage, name } = message;
 
     return (
       <div className={s.interfaceBox}>
-        <CSSTransition in={true} appear timeout={500} classNames={animation}>
+        <CSSTransition in={true} appear timeout={500} classNames="title">
           <h1 className={s.titleApp}>Phonebook</h1>
         </CSSTransition>
 
         <CSSTransition
           in={isShowMessage}
           timeout={250}
-          classNames={animation}
+          classNames="notification"
           unmountOnExit
         >
           <Notification contact={name} onClick={this.handleNotification} />
@@ -116,7 +138,7 @@ export default class App extends Component {
         <CSSTransition
           in={isShowFilter}
           timeout={250}
-          classNames={animation}
+          classNames="filter"
           unmountOnExit
         >
           <Filter filter={filter} onChange={this.handleFilter} />
